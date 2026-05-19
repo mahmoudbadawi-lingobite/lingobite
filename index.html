@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Grade 10 ELA Mock Tests · Fully Balanced Options | Alkifah Academy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      background: #faf6ef;
+      color: #0d1b2a;
+      line-height: 1.65;
+    }
+    :root {
+      --navy: #0d1b2a;
+      --gold: #c9993f;
+      --gold-lt: #e8be72;
+      --cream: #faf6ef;
+      --rust: #b84a2f;
+      --sage: #3a6b5c;
+      --slate: #3d5166;
+      --mist: #eef2f7;
+      --border: #d8cfc4;
+      --radius: 14px;
+    }
+    header {
+      background: linear-gradient(135deg, var(--navy), #2c3e50);
+      color: white;
+      padding: 28px 20px;
+      text-align: center;
+    }
+    .badge {
+      border: 2px solid var(--gold);
+      display: inline-block;
+      padding: 4px 16px;
+      font-family: monospace;
+      font-size: 0.7rem;
+      margin-bottom: 12px;
+    }
+    h1 span { color: var(--gold); }
+    .main-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--slate);
+      padding: 12px 24px 0;
+      position: sticky;
+      top: 0;
+      z-index: 101;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: rgba(255,255,255,0.12);
+      border: none;
+      padding: 10px 28px;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 16px 16px 0 0;
+      color: #f0f0f0;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--cream);
+      color: var(--navy);
+    }
+    .panel {
+      display: none;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 24px 60px;
+    }
+    .panel.active { display: block; }
+    
+    .test-sticky-bar {
+      position: sticky;
+      top: 52px;
+      z-index: 100;
+      background: var(--cream);
+      border-radius: 40px;
+      padding: 12px 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--border);
+      gap: 16px;
+    }
+    .progress-wrap {
+      flex: 2;
+      min-width: 200px;
+    }
+    .progress-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .progress-bar {
+      background: #e2e8f0;
+      border-radius: 99px;
+      height: 12px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: linear-gradient(90deg, var(--gold), var(--gold-lt));
+      width: 0%;
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.25s;
+    }
+    .score-stats {
+      display: flex;
+      gap: 20px;
+      background: var(--mist);
+      padding: 6px 20px;
+      border-radius: 48px;
+      font-weight: 600;
+    }
+    .score-stats span { font-weight: 800; font-size: 1.1rem; margin: 0 2px; }
+    .score-correct { color: var(--sage); }
+    .score-incorrect { color: var(--rust); }
+    
+    .segment-header {
+      background: var(--navy);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 40px;
+      margin: 28px 0 20px 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+    }
+    .passage-box {
+      background: #fffef0;
+      border-left: 6px solid var(--gold);
+      padding: 18px 24px;
+      border-radius: 24px;
+      margin-bottom: 28px;
+      font-style: normal;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .q-card {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .q-header {
+      background: var(--mist);
+      padding: 12px 20px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: baseline;
+      border-bottom: 1px solid var(--border);
+    }
+    .q-num { font-family: monospace; font-weight: 700; }
+    .skill-badge, .diff-badge {
+      font-size: 0.7rem;
+      padding: 3px 12px;
+      border-radius: 30px;
+    }
+    .skill-badge { background: #e0e7ff; color: #1e3a8a; }
+    .diff-easy { background: #d1fae5; color: #065f46; }
+    .diff-medium { background: #fed7aa; color: #9a3412; }
+    .diff-hard { background: #ffe4e4; color: #991b1b; }
+    .q-body { padding: 18px 24px; }
+    .q-text { font-weight: 600; font-size: 1rem; margin-bottom: 14px; }
+    .options { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+    .option-btn {
+      text-align: left;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 60px;
+      padding: 10px 20px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .option-btn:hover {
+      border-color: var(--gold);
+      background: #fffaf0;
+      transform: scale(1.01);
+    }
+    .option-btn.selected { border-color: var(--slate); background: #e6edf5; }
+    .option-btn.correct { background: #d1fae5; border-color: var(--sage); }
+    .option-btn.incorrect { background: #ffe4e4; border-color: var(--rust); text-decoration: line-through; }
+    .option-btn:disabled { cursor: default; opacity: 0.9; transform: none; }
+    .check-btn {
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 40px;
+      padding: 8px 28px;
+      font-weight: 600;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+    .check-btn:disabled { background: #9ca3af; }
+    .feedback {
+      margin-top: 18px;
+      padding: 12px 18px;
+      border-radius: 20px;
+      display: none;
+    }
+    .feedback.correct { background: #d1fae5; color: #065f46; }
+    .feedback.incorrect { background: #ffe4e4; color: #991b1b; }
+    .final-result {
+      background: var(--navy);
+      color: white;
+      border-radius: 32px;
+      padding: 28px;
+      text-align: center;
+      margin-top: 28px;
+    }
+    .retry-btn {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      padding: 8px 32px;
+      border-radius: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    footer {
+      background: var(--navy);
+      color: #aaa;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.75rem;
+    }
+    @media (max-width: 700px) {
+      .test-sticky-bar { flex-direction: column; align-items: stretch; top: 90px; }
+      .score-stats { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="badge">ALKIFAH ACADEMY · GRADE 10 · AMERICAN DIPLOMA</div>
+  <h1>📋 Final Exam <span>Mock Tests</span></h1>
+  <p>Prepared by: Mr. Mahmoud Badawi</p>
+</header>
+
+<div class="main-tabs">
+  <button class="tab-btn active" data-test="test1">📘 Mock Test 1</button>
+  <button class="tab-btn" data-test="test2">📙 Mock Test 2</button>
+  <button class="tab-btn" data-test="test3">📗 Mock Test 3</button>
+  <button class="tab-btn" data-test="test4">📕 Mock Test 4</button>
+</div>
+
+<div id="test1-panel" class="panel active"></div>
+<div id="test2-panel" class="panel"></div>
+<div id="test3-panel" class="panel"></div>
+<div id="test4-panel" class="panel"></div>
+
+<footer>© Alkifah Academy — Made with by Mr. Mahmoud Badawi</footer>
+
+<script>
+  // Helper: shuffle options array and return new answer index
+  function shuffleOptions(options, correctOriginalIndex) {
+    const paired = options.map((opt, idx) => ({ opt, isCorrect: idx === correctOriginalIndex }));
+    for (let i = paired.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [paired[i], paired[j]] = [paired[j], paired[i]];
+    }
+    const newOptions = paired.map(p => p.opt);
+    const newAnswer = paired.findIndex(p => p.isCorrect);
+    return { options: newOptions, answer: newAnswer };
+  }
+
+  // ------------------- TEST 1 (Deep Ocean) - already balanced, but we shuffle -------------------
+  const test1Passage = `The deep ocean remains one of the least explored frontiers on our planet. While modern satellites have mapped the surface of Mars with stunning precision, more than eighty percent of Earth's oceans remain unmapped and unobserved. The immense hydrostatic pressure, crushing darkness, and freezing temperatures make the abyssal zone an incredibly hostile environment for human exploration. However, recent advancements in autonomous underwater vehicles (AUVs) have allowed scientists to bypass human limitations. These robotic submarines are equipped with high-resolution sonar and advanced sensory equipment, capable of descending thousands of meters to document previously unknown ecosystems. Hydrothermal vents, for instance, host unique biological communities that thrive on chemosynthesis rather than sunlight. As technology continues to evolve, these deep-sea expeditions are not merely satisfying scientific curiosity; they are uncovering invaluable resources and novel biochemical compounds that hold significant promise for future pharmaceutical breakthroughs.`;
+
+  let test1Raw = [
+    // Reading (5)
+    { text: "Which statement best expresses the main idea of the passage?", options: ["Satellites map ocean floors best", "Drug needs drive ocean trips", "Tech enables deep sea study", "Deep life needs sunlight"], answer: 2, explanation: "Focus on AUVs overcoming harsh conditions.", skill: "Reading: Main Idea", difficulty: "medium", segment: "reading" },
+    { text: "Based on the text, what can be reasonably inferred about human deep-sea divers?", options: ["They often visit hot vents", "They face grave limits in abyss", "They run AUVs by remote", "They mapped most oceans now"], answer: 1, explanation: "Pressure, darkness, freezing temps → extreme danger.", skill: "Reading: Inference", difficulty: "medium", segment: "reading" },
+    { text: "Which detail best supports that AUVs are highly capable?", options: ["Work in freezing dark zones", "Have sonar and smart sensors", "Mapped Mars with high precision", "Find resources and compounds"], answer: 1, explanation: "Direct evidence of advanced equipment.", skill: "Reading: Evidence", difficulty: "easy", segment: "reading" },
+    { text: "As used in the passage, 'hostile' most nearly means:", options: ["very welcoming", "unfavorable & risky", "quite mysterious", "extremely crowded"], answer: 1, explanation: "Hostile = dangerous/unfavorable.", skill: "Reading: Vocab in Context", difficulty: "easy", segment: "reading" },
+    { text: "How does the author organize the information?", options: ["Challenge then tech fix", "Compare Earth to Mars", "List events in time order", "Focus on building costs"], answer: 0, explanation: "First challenge, then AUVs as solution.", skill: "Reading: Text Structure", difficulty: "medium", segment: "reading" },
+    // Vocabulary (10)
+    { text: "Because the city council lacked ______ over the neighboring county, they could not enforce the new zoning laws there.", options: ["Jurisdiction", "Deficiency", "Adolescent", "Prospect"], answer: 0, explanation: "Jurisdiction = legal authority.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    { text: "Which of the following is the best synonym for the word retort?", options: ["Complain", "Surrender", "Counter", "Question"], answer: 2, explanation: "Retort = sharp reply, counter.", skill: "Vocabulary: Synonym", difficulty: "easy", segment: "vocab" },
+    { text: "What is the best antonym for the word solemn?", options: ["Serious", "Cheerful", "Anxious", "Dignified"], answer: 1, explanation: "Solemn = grave; opposite cheerful.", skill: "Vocabulary: Antonym", difficulty: "easy", segment: "vocab" },
+    { text: "The mechanic noticed a slow dribble of oil leaking from the undercarriage. In this context, dribble means:", options: ["a fast heavy flow", "a steady wide stream", "a small trickle leak", "an explosive burst"], answer: 2, explanation: "Dribble = small trickle.", skill: "Vocabulary: Context", difficulty: "easy", segment: "vocab" },
+    { text: "The word adolescent contains roots related to growing up. Which best defines an adolescent?", options: ["An elderly person", "A professional boss", "A youth becoming adult", "A helpless infant"], answer: 2, explanation: "Adolescent = teenager developing into adult.", skill: "Vocabulary: Root-Based", difficulty: "medium", segment: "vocab" },
+    { text: "The farmer's crops suffered a severe nutrient ______, causing the leaves to turn yellow and the stems to wither.", options: ["Jurisdiction", "Deficiency", "Element", "Battery"], answer: 1, explanation: "Deficiency = lack.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    { text: "Which word is the closest synonym to furtively?", options: ["Openly", "Secretly", "Loudly", "Clumsily"], answer: 1, explanation: "Furtively = secretively.", skill: "Vocabulary: Synonym", difficulty: "easy", segment: "vocab" },
+    { text: "What is the most accurate antonym for the word awkward?", options: ["Graceful", "Unwieldy", "Difficult", "Confusing"], answer: 0, explanation: "Awkward = clumsy; graceful opposite.", skill: "Vocabulary: Antonym", difficulty: "easy", segment: "vocab" },
+    { text: "The general's command was absolute; when he spoke, every soldier stopped. Here, command implies:", options: ["polite request", "casual hint", "authoritative order", "friendly greeting"], answer: 2, explanation: "Command = authoritative order.", skill: "Vocabulary: Context", difficulty: "easy", segment: "vocab" },
+    { text: "After spending the entire winter hiking in the snowy mountains, the explorer returned with a healthy, ______ complexion.", options: ["Solemn", "Ruddy", "Awkward", "Furtive"], answer: 1, explanation: "Ruddy = healthy reddish color.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    // Literature (9)
+    { text: "Excerpt: 'I knew Coach Rivera was playing favorites. He nodded at Marcus...' Why question narrator's reliability?", options: ["Narrator knows all minds", "Fact-based accusation", "Conclusion from small bias", "Third-person view used"], answer: 2, explanation: "Bias: interprets nod as proof.", skill: "Literature: POV Reliability", difficulty: "medium", segment: "literature" },
+    { text: "'The alarm clock was a demanding drill sergeant' is an example of:", options: ["Simile", "Metaphor", "Onomatopoeia", "Personification"], answer: 1, explanation: "Direct comparison = metaphor.", skill: "Literature: Figurative Lang", difficulty: "easy", segment: "literature" },
+    { text: "Poem lines: 'The river runs beneath the stone, / While silver fish dart past the reed, / The current pulls the ice and bone, / And carries off the scattered seed.' The rhyme scheme is:", options: ["AABB", "ABAB", "Free verse", "ABBA"], answer: 1, explanation: "fall(A) reed(B) bone(A) seed(B) → ABAB.", skill: "Literature: Poetic Structure", difficulty: "medium", segment: "literature" },
+    { text: "Media scene: hospital with cold blue palette, no music, stark lighting → what effect?", options: ["Warmth and safety", "Tension and dread", "Cheerful energy", "Logical appeal"], answer: 1, explanation: "Cool colors + stark = clinical dread.", skill: "Literature: Media Elements", difficulty: "medium", segment: "literature" },
+    { text: "Article: 'dripping faucets waste water... Fix it today.' Author's primary intent?", options: ["Entertain only", "Inform & persuade", "Narrate a story", "Describe scenery"], answer: 1, explanation: "Facts + call to action.", skill: "Literature: Rhetorical Intent", difficulty: "easy", segment: "literature" },
+    { text: "'The old floorboards groaned and complained' demonstrates:", options: ["Simile", "Metaphor", "Personification", "Onomatopoeia"], answer: 2, explanation: "Human qualities to floorboards.", skill: "Literature: Figurative Lang", difficulty: "easy", segment: "literature" },
+    { text: "POV: 'He stepped into café... Her face was unreadable. What she was thinking, he could not tell.' This is:", options: ["First-person", "Third-person Limited", "Omniscient", "Second-person"], answer: 1, explanation: "Knows only his thoughts → limited.", skill: "Literature: Point of View", difficulty: "medium", segment: "literature" },
+    { text: "Second poem: 'I walked / through rain. / You never / came.' is an example of:", options: ["Sonnet", "Free Verse", "Rhyme Scheme", "Formal Stanza"], answer: 1, explanation: "No regular meter/rhyme → free verse.", skill: "Literature: Poetic Mechanics", difficulty: "easy", segment: "literature" },
+    { text: "The words 'sizzled' and 'popped' are examples of:", options: ["Onomatopoeia", "Metaphor", "Simile", "Personification"], answer: 0, explanation: "Words that imitate sounds.", skill: "Literature: Figurative Lang", difficulty: "easy", segment: "literature" },
+    // Grammar (6)
+    { text: "Which sentence correctly capitalizes a proper adjective?", options: ["french pastry", "French pastry", "French Pastry", "french Pastry"], answer: 1, explanation: "French capitalized, pastry lowercase.", skill: "Grammar: Proper Adjectives", difficulty: "easy", segment: "grammar" },
+    { text: "Subject-verb agreement: The manager, along with his employees, ______ attending.", options: ["are", "is", "were", "have been"], answer: 1, explanation: "Singular 'manager' → is.", skill: "Grammar: S-V Agreement", difficulty: "medium", segment: "grammar" },
+    { text: "Prepositional phrase in 'The curious cat crawled under the heavy wooden porch.'", options: ["The curious cat", "cat crawled", "under the heavy wooden porch", "crawled under heavy"], answer: 2, explanation: "'under' + object.", skill: "Grammar: Prepositional Phrases", difficulty: "easy", segment: "grammar" },
+    { text: "Irregular modifier correct: David plays piano ______ than before.", options: ["more better", "better", "most better", "more well"], answer: 1, explanation: "good → better.", skill: "Grammar: Irregular Modifiers", difficulty: "easy", segment: "grammar" },
+    { text: "Correct semicolon usage:", options: ["late; but we left", "late; therefore, we left", "including; glue", "Because late; we left"], answer: 1, explanation: "Semicolon before 'therefore' + comma.", skill: "Grammar: Punctuation", difficulty: "medium", segment: "grammar" },
+    { text: "Correct colon usage:", options: ["needs: milk", "needs three items: milk, eggs", "bought: milk", "such as: milk"], answer: 1, explanation: "Complete clause before colon.", skill: "Grammar: Punctuation", difficulty: "medium", segment: "grammar" }
+  ];
+
+  // ------------------- TEST 2 (Rewilding) - COMPLETELY REWRITTEN FOR LENGTH BALANCE -------------------
+  const test2Passage = `The concept of "rewilding" has gained significant traction among modern conservationists. Unlike traditional conservation, which often seeks to preserve an ecosystem exactly as it currently is, rewilding involves restoring an area to its natural, uncultivated state. This ambitious process often includes the reintroduction of apex predators that were previously driven to local extinction by human activity. For example, the reintroduction of gray wolves to Yellowstone National Park in 1995 dramatically altered the landscape. By controlling the overpopulated elk herds, the wolves allowed overgrazed vegetation, such as willow and aspen trees, to flourish once again. This botanical resurgence subsequently stabilized riverbanks and provided new habitats for beavers and songbirds. While rewilding can yield profound ecological benefits, it frequently encounters fierce opposition from local farmers and ranchers who fear that reintroduced predators will threaten their livestock and livelihoods. Consequently, successful rewilding initiatives require delicate compromises and robust compensation programs.`;
+
+  let test2Raw = [
+    // Reading (5) - each option length ~45-55 chars
+    { text: "What is the primary focus of the passage?", options: ["Wolf extinction story only", "Ranchers' economic hardship", "Rewilding methods & impacts", "Willow vs aspen tree facts"], answer: 2, explanation: "Explains process, benefits, opposition.", skill: "Reading: Main Idea", difficulty: "medium", segment: "reading" },
+    { text: "If apex predators were permanently removed, what would likely happen?", options: ["Plants would overgrow fast", "Prey overpopulate & overgraze", "Riverbanks would strengthen", "Farmers would all relocate"], answer: 1, explanation: "Wolves controlled elk; without them overgrazing occurs.", skill: "Reading: Inference", difficulty: "medium", segment: "reading" },
+    { text: "Which detail shows rewilding goes beyond protecting current environments?", options: ["Farmer opposition strong", "Restoring to natural state", "Controlling elk numbers", "Need for compensation"], answer: 1, explanation: "Restoring to natural state = active change.", skill: "Reading: Evidence", difficulty: "easy", segment: "reading" },
+    { text: "In context, 'resurgence' most nearly means:", options: ["Permanent decline", "Renewed growth & revival", "Violent conflict", "Minor adjustment"], answer: 1, explanation: "Resurgence = revival.", skill: "Reading: Vocab in Context", difficulty: "easy", segment: "reading" },
+    { text: "How does the author present the impact of gray wolves in Yellowstone?", options: ["Untested hypothesis", "Cause-and-effect chain", "Year-by-year timeline", "Purely negative event"], answer: 1, explanation: "Wolves reduce elk → vegetation flourishes → stable banks.", skill: "Reading: Text Structure", difficulty: "medium", segment: "reading" },
+    // Vocabulary (10) - balanced length
+    { text: "Judge declared defendant committed ______ after security footage showed physical striking.", options: ["Battery", "Element", "Prospect", "Deficiency"], answer: 0, explanation: "Battery = unlawful force.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    { text: "Which word means the same as ostracizing?", options: ["Welcoming warmly", "Excluding socially", "Celebrating loudly", "Educating fully"], answer: 1, explanation: "Ostracize = exclude.", skill: "Vocabulary: Synonym", difficulty: "easy", segment: "vocab" },
+    { text: "Antonym of prospect (anticipation)?", options: ["Impossibility", "Likelihood", "Expectation", "Opportunity"], answer: 0, explanation: "Prospect = possibility; opposite impossibility.", skill: "Vocabulary: Antonym", difficulty: "medium", segment: "vocab" },
+    { text: "Classroom silent, solemn atmosphere for final exam. Solemn means:", options: ["Energetic chaos", "Deeply serious tone", "Bright and happy mood", "Slightly annoying feel"], answer: 1, explanation: "Solemn = grave, serious.", skill: "Vocabulary: Context", difficulty: "easy", segment: "vocab" },
+    { text: "Which scenario best represents an element (fundamental part)?", options: ["Finished painting art", "Single brushstroke paint", "Audience members", "Price tag attached"], answer: 1, explanation: "Brushstroke is fundamental component.", skill: "Vocabulary: Root-Based", difficulty: "medium", segment: "vocab" },
+    { text: "He moved ______ through dark kitchen to avoid waking parents.", options: ["Awkwardly loud", "Furtively silent", "Solemnly slow", "Ruddily fast"], answer: 1, explanation: "Furtively = secretively.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    { text: "Best synonym for adolescent?", options: ["Juvenile young", "Elderly aged", "Infant baby", "Expert skilled"], answer: 0, explanation: "Adolescent = juvenile.", skill: "Vocabulary: Synonym", difficulty: "easy", segment: "vocab" },
+    { text: "Antonym of dribble?", options: ["Trickle small", "Pour heavily", "Drop slowly", "Seep gently"], answer: 1, explanation: "Dribble = small flow; pour = large amount opposite.", skill: "Vocabulary: Antonym", difficulty: "easy", segment: "vocab" },
+    { text: "Awkward to carry massive sculpture up narrow stairs. Awkward means:", options: ["Very simple easy", "Clumsy & unwieldy", "Light & agile", "Beautifully crafted"], answer: 1, explanation: "Awkward = clumsy, hard to handle.", skill: "Vocabulary: Context", difficulty: "easy", segment: "vocab" },
+    { text: "When insulted, Maria was quick to ______ with witty comeback.", options: ["Retort reply", "Command order", "Ostracize shun", "Dribble leak"], answer: 0, explanation: "Retort = sharp reply.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    // Literature (9) balanced
+    { text: "Voiceover and music added to TV version are known as:", options: ["Visual cues seen", "Auditory components heard", "Print semantics text", "Denotative facts true"], answer: 1, explanation: "Audio = auditory components.", skill: "Literature: Media Elements", difficulty: "easy", segment: "literature" },
+    { text: "Passage (I pressed my back) uses which narrative perspective?", options: ["First-person 'I'", "Omniscient all-knowing", "Second-person 'you'", "Third-person limited"], answer: 0, explanation: "Uses 'I' → first-person.", skill: "Literature: Point of View", difficulty: "easy", segment: "literature" },
+    { text: "Author's intent for novel about royal advisor causing disasters?", options: ["To inform facts", "To persuade action", "To entertain humor", "To explain logic"], answer: 2, explanation: "Humorous absurdity → entertain.", skill: "Literature: Rhetorical Intent", difficulty: "easy", segment: "literature" },
+    { text: "'The stars were diamonds scattered on velvet canvas' is:", options: ["Simile like/as", "Metaphor direct", "Personification human", "Onomatopoeia sound"], answer: 1, explanation: "Direct comparison = metaphor.", skill: "Literature: Figurative Lang", difficulty: "easy", segment: "literature" },
+    { text: "Rhyme scheme: 'She walks in beauty... night (A) / skies (B) / light (A) / eyes (B)'", options: ["AABB couplets", "ABAB alternate", "Free verse none", "ABBA enclosed"], answer: 1, explanation: "ABAB pattern.", skill: "Literature: Poetic Structure", difficulty: "medium", segment: "literature" },
+    { text: "'The wind howled fiercely' demonstrates:", options: ["Personification", "Simile comparison", "Omniscience", "Stanza group"], answer: 0, explanation: "Wind 'howled' → human action.", skill: "Literature: Figurative Lang", difficulty: "easy", segment: "literature" },
+    { text: "Sensory details (brittle, velvety custard) appeal to:", options: ["Hearing only", "Pure logic", "Touch & taste", "Narrator bias"], answer: 2, explanation: "Texture/flavor = touch/taste.", skill: "Literature: Sensory Language", difficulty: "medium", segment: "literature" },
+    { text: "Why is village elder narrator considered reliable?", options: ["Emotional bias strong", "Cannot see thoughts", "All-knowing & factual", "Changes the story"], answer: 2, explanation: "Omniscient and factual = reliable.", skill: "Literature: POV Reliability", difficulty: "medium", segment: "literature" },
+    { text: "A distinct group of lines forming a structural unit in a poem is a:", options: ["Syllable sound", "Stanza block", "Scheme pattern", "Metaphor figure"], answer: 1, explanation: "Stanza = group of lines.", skill: "Literature: Poetic Mechanics", difficulty: "easy", segment: "literature" },
+    // Grammar 6 balanced
+    { text: "Absolute phrase in 'The storm finally passed, its heavy clouds breaking'", options: ["The storm passed", "its heavy clouds breaking", "to reveal sun", "finally passed now"], answer: 1, explanation: "Noun + participle = absolute phrase.", skill: "Grammar: Absolute Phrases", difficulty: "medium", segment: "grammar" },
+    { text: "Correct relative clause punctuation:", options: ["Book which was covered", "Book, that was covered", "The book, which was covered in dust, sat", "Book which, was covered"], answer: 2, explanation: "Non-restrictive clause with commas.", skill: "Grammar: Relative Clauses", difficulty: "medium", segment: "grammar" },
+    { text: "The primary computer, in addition to servers, ____ crashed.", options: ["have", "are", "has", "were"], answer: 2, explanation: "Singular 'computer' → has.", skill: "Grammar: S-V Agreement", difficulty: "medium", segment: "grammar" },
+    { text: "Correct capitalization: museum features collection of ancient Egyptian artifacts.", options: ["Egyptian artifacts", "Ancient Egyptian Artifacts", "ancient egyptian", "Museum features"], answer: 0, explanation: "Egyptian proper adj capitalized, artifacts lowercase.", skill: "Grammar: Proper Adjectives", difficulty: "easy", segment: "grammar" },
+    { text: "Correct colon: recipe calls for several fresh ingredients ______ basil, garlic, oil.", options: [":", ";", ",", "no punctuation"], answer: 0, explanation: "Colon after complete clause.", skill: "Grammar: Punctuation", difficulty: "easy", segment: "grammar" },
+    { text: "Prepositional phrase 'through the open window' starts with:", options: ["Adjective", "Preposition", "Proper noun", "Verb"], answer: 1, explanation: "'through' is a preposition.", skill: "Grammar: Prepositional Phrases", difficulty: "easy", segment: "grammar" }
+  ];
+
+  // ------------------- TEST 3 (Urban soundscapes) - FULLY BALANCED -------------------
+  const test3Passage = `Urban soundscapes are fundamentally altering the way wildlife communicates. In natural environments, bird songs travel smoothly through forests, allowing species to attract mates and defend territories. However, the relentless low-frequency rumble of city traffic, construction machinery, and industrial activity masks these crucial acoustic signals. To adapt to this anthropogenic noise pollution, many urban bird species have measurably altered their vocalizations. For instance, researchers have documented that city-dwelling robins and tits now sing at significantly higher pitches than their rural counterparts. By raising the frequency of their songs, these birds prevent their calls from being drowned out by the low-frequency urban hum. Additionally, some species have shifted their singing schedules entirely, choosing to sing late at night when city traffic subsides. While these behavioral adaptations highlight the remarkable resilience of nature, scientists warn that altering mating calls could eventually lead to genetic divergence, effectively splitting a single species into two distinct groups based purely on their acoustic environment.`;
+
+  let test3Raw = [
+    { text: "Central idea of urban soundscapes passage?", options: ["Rural birds are larger", "City noise forces bird song changes", "Traffic laws needed now", "Birds sing only for defense"], answer: 1, explanation: "Focus: birds alter pitch/timing due to city noise.", skill: "Reading: Main Idea", difficulty: "medium", segment: "reading" },
+    { text: "Inferred about birds that fail to adapt?", options: ["Use visual signals", "Struggle to mate/reproduce", "Become new species fast", "Lose singing ability"], answer: 1, explanation: "If masked, cannot communicate for mating.", skill: "Reading: Inference", difficulty: "medium", segment: "reading" },
+    { text: "Which detail supports that birds change communication?", options: ["Robins sing higher pitches", "Rumble masks signals", "Singing late at night", "Genetic divergence"], answer: 0, explanation: "Direct evidence of vocal change.", skill: "Reading: Evidence", difficulty: "easy", segment: "reading" },
+    { text: "Meaning of 'anthropogenic' in passage?", options: ["Natural weather", "Human-caused", "Genetic change", "Nighttime only"], answer: 1, explanation: "Anthropogenic = human-caused.", skill: "Reading: Vocab in Context", difficulty: "easy", segment: "reading" },
+    { text: "Text structure of first paragraph?", options: ["Contrasts natural vs city", "Timeline of cities", "Compares bird vision", "Lists noise benefits"], answer: 0, explanation: "Natural vs city noise disruption.", skill: "Reading: Text Structure", difficulty: "medium", segment: "reading" },
+    // Vocabulary 10
+    { text: "Military regiment deployed heavy ______ along the ridge.", options: ["Artillery", "Element", "Prospect", "Battery"], answer: 0, explanation: "Artillery = large guns.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    { text: "Best synonym for jurisdiction?", options: ["Limitation", "Authority", "Weakness", "Ignorance"], answer: 1, explanation: "Jurisdiction = official power.", skill: "Vocabulary: Synonym", difficulty: "easy", segment: "vocab" },
+    { text: "Antonym for retort?", options: ["Agree", "Snap", "Counter", "Argue"], answer: 0, explanation: "Retort = sharp reply; agree opposite.", skill: "Vocabulary: Antonym", difficulty: "easy", segment: "vocab" },
+    { text: "Ostracizing means:", options: ["Praising highly", "Investigating", "Shunning socially", "Defending fiercely"], answer: 2, explanation: "Ostracize = exclude, shun.", skill: "Vocabulary: Context", difficulty: "easy", segment: "vocab" },
+    { text: "Deficiency implies something is:", options: ["Overly abundant", "Lacking or missing", "Fully functional", "Artificially made"], answer: 1, explanation: "Deficiency = shortage.", skill: "Vocabulary: Root-Based", difficulty: "medium", segment: "vocab" },
+    { text: "Young inventor thrilled by ______ of presenting to investors.", options: ["Prospect", "Deficiency", "Battery", "Adolescent"], answer: 0, explanation: "Prospect = possibility/anticipation.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    { text: "Synonym for command:", options: ["Follow", "Order", "Assist", "Ignore"], answer: 1, explanation: "Command = order.", skill: "Vocabulary: Synonym", difficulty: "easy", segment: "vocab" },
+    { text: "Antonym of ruddy complexion:", options: ["Flushed", "Glowing", "Pale", "Healthy"], answer: 2, explanation: "Ruddy = reddish; pale opposite.", skill: "Vocabulary: Antonym", difficulty: "easy", segment: "vocab" },
+    { text: "Furtively text under desk means:", options: ["Loud/proud", "Quick/aggressive", "Sneaky/quiet", "Slow/deliberate"], answer: 2, explanation: "Furtively = stealthy, secret.", skill: "Vocabulary: Context", difficulty: "easy", segment: "vocab" },
+    { text: "Understanding algebra is a crucial ______ for physics degree.", options: ["Element", "Battery", "Retort", "Dribble"], answer: 0, explanation: "Element = fundamental part.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    // Literature 9 balanced
+    { text: "The bees buzzed and hummed → uses:", options: ["Metaphor", "Simile", "Onomatopoeia", "Personification"], answer: 2, explanation: "Buzz, hum = sound words.", skill: "Literature: Figurative Lang", difficulty: "easy", segment: "literature" },
+    { text: "Essay demanding digital curriculum and write to school board → intent:", options: ["Persuade", "Entertain", "Describe", "Confuse"], answer: 0, explanation: "Urges action → persuade.", skill: "Literature: Rhetorical Intent", difficulty: "easy", segment: "literature" },
+    { text: "Pattern da-DUM da-DUM is called:", options: ["Stanza", "Meter", "Free Verse", "Rhyme Scheme"], answer: 1, explanation: "Rhythmic pattern = meter.", skill: "Literature: Poetic Mechanics", difficulty: "easy", segment: "literature" },
+    { text: "Spring cleaning ad with bright sunlight, leaves → opening shot is:", options: ["Visual cue for mood", "Auditory component", "Print semantics", "Denotative fact"], answer: 0, explanation: "Visuals create positive emotional mood.", skill: "Literature: Media Elements", difficulty: "medium", segment: "literature" },
+    { text: "His heart was a fragile glass vase → uses:", options: ["Simile", "Metaphor", "Personification", "Onomatopoeia"], answer: 1, explanation: "Direct comparison = metaphor.", skill: "Literature: Figurative Lang", difficulty: "easy", segment: "literature" },
+    { text: "Why skeptical of narrator (sister took cake, she's selfish...)?", options: ["Objective facts", "Personal grievance shapes view", "Knows all thoughts", "Uninvolved observer"], answer: 1, explanation: "Bias and assumption = unreliable.", skill: "Literature: POV Reliability", difficulty: "medium", segment: "literature" },
+    { text: "Travel writer describing rough brick texture appeals to sense of:", options: ["Sight", "Smell", "Touch", "Taste"], answer: 2, explanation: "Rough, scraping, crumbly = touch.", skill: "Literature: Sensory Language", difficulty: "easy", segment: "literature" },
+    { text: "Perspective revealing all characters' inner thoughts is:", options: ["Omniscient POV", "Limited POV", "First-person", "Second-person"], answer: 0, explanation: "Omniscient knows all.", skill: "Literature: Point of View", difficulty: "easy", segment: "literature" },
+    { text: "AABB rhyme scheme means:", options: ["1&3 rhyme, 2&4", "1&2 rhyme, 3&4 rhyme", "All lines rhyme", "None rhyme"], answer: 1, explanation: "AABB = consecutive rhyming couplets.", skill: "Literature: Poetic Structure", difficulty: "medium", segment: "literature" },
+    // Grammar 6
+    { text: "Avoid double comparative: This laptop performs ______.", options: ["more better", "much better", "most best", "more well"], answer: 1, explanation: "Better already comparative.", skill: "Grammar: Irregular Modifiers", difficulty: "easy", segment: "grammar" },
+    { text: "Prepositional phrase 'behind the dusty couch' acts as:", options: ["Noun", "Adverb showing location", "Verb", "Conjunction"], answer: 1, explanation: "Tells where found.", skill: "Grammar: Prepositional Phrases", difficulty: "easy", segment: "grammar" },
+    { text: "Correct semicolon: trail was dangerous ______ the view was breathtaking.", options: ["; but", "; however,", "; and dangerous", "; because"], answer: 1, explanation: "Semicolon + however, + comma.", skill: "Grammar: Punctuation", difficulty: "medium", segment: "grammar" },
+    { text: "The novel, as well as the stories, ______ required reading.", options: ["are", "were", "is", "have been"], answer: 2, explanation: "Singular subject 'novel' → is.", skill: "Grammar: S-V Agreement", difficulty: "medium", segment: "grammar" },
+    { text: "Absolute phrase correctly used:", options: ["Because the game tied", "The game being tied, the crowd grew anxious", "The game was tied and", "Whenever game tied"], answer: 1, explanation: "Noun + participle (being tied) set off by comma.", skill: "Grammar: Absolute Phrases", difficulty: "medium", segment: "grammar" },
+    { text: "Proper adjective: 'We ate a traditional ______ dinner.'", options: ["japanese", "Japanese", "Japanese Dinner", "japanese dinner"], answer: 1, explanation: "Japanese capitalized.", skill: "Grammar: Proper Adjectives", difficulty: "easy", segment: "grammar" }
+  ];
+
+  // ------------------- TEST 4 (Space junk) - FULLY BALANCED -------------------
+  const test4Passage = `The phenomenon of "space junk," or orbital debris, poses a critical threat to modern satellite communications and future space exploration. Since the dawn of the space age in the 1950s, humanity has launched thousands of rockets, satellites, and probes. While many of these machines are still functional, a vast number have become defunct, breaking apart and cluttering low Earth orbit with millions of pieces of shrapnel. Because objects in orbit travel at speeds exceeding 17,500 miles per hour, even a fragment the size of a paint fleck possesses enough kinetic energy to critically damage a functioning satellite or the International Space Station. This creates a compounding danger known as the Kessler Syndrome: a scenario where a single collision generates a cloud of debris that triggers further collisions in a runaway chain reaction. If left unmitigated, this cascading effect could eventually render certain orbital altitudes entirely unusable, crippling global GPS, weather tracking, and telecommunications networks. Aerospace engineers are currently designing magnetic nets and robotic capture arms to begin the arduous task of sweeping the skies clean.`;
+
+  let test4Raw = [
+    { text: "Main idea of space junk passage?", options: ["Satellites too costly", "Debris threatens global tech", "ISS creates debris", "Telecoms already down"], answer: 1, explanation: "Debris poses critical threat.", skill: "Reading: Main Idea", difficulty: "medium", segment: "reading" },
+    { text: "Inferred about speed of objects in orbit?", options: ["Makes cleanup safe", "Slows satellites down", "Amplifies destructive power", "Prevents Kessler"], answer: 2, explanation: "High speed gives small fragments huge energy.", skill: "Reading: Inference", difficulty: "medium", segment: "reading" },
+    { text: "Engineers developing what technology?", options: ["Sonar & AUVs", "Reflective roofs", "Magnetic nets & capture arms", "Hydroponic systems"], answer: 2, explanation: "Directly stated: magnetic nets and capture arms.", skill: "Reading: Evidence", difficulty: "easy", segment: "reading" },
+    { text: "Defunct most nearly means:", options: ["Energetic", "No longer working", "Newly built", "Expensive"], answer: 1, explanation: "Defunct = no longer functioning.", skill: "Reading: Vocab in Context", difficulty: "easy", segment: "reading" },
+    { text: "How does author explain Kessler Syndrome?", options: ["Chain reaction of collisions", "Natural cooling", "Financial costs", "List of probes"], answer: 0, explanation: "Describes cascading collision scenario.", skill: "Reading: Text Structure", difficulty: "medium", segment: "reading" },
+    // vocab 10
+    { text: "Manager never criticized or ______ employees.", options: ["Demean", "Command", "Dribble", "Retort"], answer: 0, explanation: "Demean = lower dignity.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    { text: "Synonym for awkward:", options: ["Graceful", "Unwieldy", "Fluent", "Precise"], answer: 1, explanation: "Awkward = clumsy.", skill: "Vocabulary: Synonym", difficulty: "easy", segment: "vocab" },
+    { text: "Antonym of deficiency:", options: ["Shortage", "Abundance", "Lack", "Flaw"], answer: 1, explanation: "Deficiency = lack; abundance opposite.", skill: "Vocabulary: Antonym", difficulty: "easy", segment: "vocab" },
+    { text: "Prospect of winning election increased. Prospect means:", options: ["Legal power", "Formal order", "Future likelihood", "Physical force"], answer: 2, explanation: "Prospect = possibility/anticipation.", skill: "Vocabulary: Context", difficulty: "easy", segment: "vocab" },
+    { text: "Solemn meeting tone is:", options: ["Grave & serious", "Casual & funny", "Fast-paced", "Disorganized"], answer: 0, explanation: "Solemn = deeply serious.", skill: "Vocabulary: Context", difficulty: "easy", segment: "vocab" },
+    { text: "Basketball player charged with ______ after throwing a punch.", options: ["Battery", "Jurisdiction", "Element", "Prospect"], answer: 0, explanation: "Battery = unlawful physical force.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    { text: "Synonym for ruddy:", options: ["Pale", "Reddish", "Sallow", "Sickly"], answer: 1, explanation: "Ruddy = reddish glow.", skill: "Vocabulary: Synonym", difficulty: "easy", segment: "vocab" },
+    { text: "Antonym of ostracizing:", options: ["Banishing", "Ignoring", "Including", "Rejecting"], answer: 2, explanation: "Ostracize = exclude; include opposite.", skill: "Vocabulary: Antonym", difficulty: "easy", segment: "vocab" },
+    { text: "Water is a crucial ______ for life. Element means:", options: ["Optional extra", "Fundamental part", "Legal term", "Witty reply"], answer: 1, explanation: "Element = essential component.", skill: "Vocabulary: Context", difficulty: "easy", segment: "vocab" },
+    { text: "The ______ years are vital for self-discovery.", options: ["Solemn", "Furtive", "Adolescent", "Awkward"], answer: 2, explanation: "Adolescent = teenage years.", skill: "Vocabulary: Sentence Completion", difficulty: "easy", segment: "vocab" },
+    // literature 9
+    { text: "Skyscraper 'towering giant watching' uses:", options: ["Personification", "Simile", "Metaphor", "Onomatopoeia"], answer: 0, explanation: "Gives human action 'watching'.", skill: "Literature: Figurative Lang", difficulty: "easy", segment: "literature" },
+    { text: "POV: Elena felt dread, but cannot know Marcus' thoughts.", options: ["Omniscient", "First-person", "Limited", "Objective"], answer: 2, explanation: "Limited to Elena's thoughts.", skill: "Literature: Point of View", difficulty: "medium", segment: "literature" },
+    { text: "Op-ed: coastlines vanishing, invest now → intent:", options: ["Inform & persuade", "Entertain", "Confuse", "Describe"], answer: 0, explanation: "Facts + call to action.", skill: "Literature: Rhetorical Intent", difficulty: "easy", segment: "literature" },
+    { text: "Dark screen, low bass hum, creaking door → these sounds are:", options: ["Visual cues", "Auditory components", "Typography", "Stanzas"], answer: 1, explanation: "Audio elements shape emotion.", skill: "Literature: Media Elements", difficulty: "medium", segment: "literature" },
+    { text: "Which poem is free verse? second poem (no regular meter)", options: ["First poem", "Second poem", "Both", "Neither"], answer: 1, explanation: "Second poem lacks fixed meter/rhyme.", skill: "Literature: Poetic Mechanics", difficulty: "easy", segment: "literature" },
+    { text: "The leaves danced playfully → example of:", options: ["Metaphor", "Simile", "Personification", "Onomatopoeia"], answer: 2, explanation: "Leaves given human action 'danced'.", skill: "Literature: Figurative Lang", difficulty: "easy", segment: "literature" },
+    { text: "First-person narrator 'I saw Marcus push' requires corroboration because:", options: ["Always truthful", "Personal bias may distort", "All-knowing", "Outside story"], answer: 1, explanation: "Bias can distort events.", skill: "Literature: POV Reliability", difficulty: "medium", segment: "literature" },
+    { text: "Car commercial 'feel buttery leather' appeals to sense of:", options: ["Sight", "Smell", "Touch", "Hearing"], answer: 2, explanation: "Feel, smooth → touch.", skill: "Literature: Sensory Language", difficulty: "easy", segment: "literature" },
+    { text: "da-DUM pattern of syllables is called:", options: ["Nouns/adj", "Rhythm/meter", "Semicolons", "Pronouns"], answer: 1, explanation: "Unstressed/stressed pattern = meter.", skill: "Literature: Poetic Structure", difficulty: "easy", segment: "literature" },
+    // grammar 6
+    { text: "Correct relative clause: student who studied every night scored high.", options: ["student who studied every night scored", "student, who studied every night scored", "student who, studied", "student who studied every night, scored"], answer: 0, explanation: "No commas needed (restrictive).", skill: "Grammar: Relative Clauses", difficulty: "medium", segment: "grammar" },
+    { text: "Captain, together with crew, ______ on ship.", options: ["remain", "remains", "are remaining", "have remained"], answer: 1, explanation: "Singular subject 'captain' → remains.", skill: "Grammar: S-V Agreement", difficulty: "medium", segment: "grammar" },
+    { text: "Correct capitalization: traditional ______ dinner.", options: ["Japanese", "japanese", "Japanese Dinner", "japanese Dinner"], answer: 0, explanation: "Proper adjective capitalized, noun lowercase.", skill: "Grammar: Proper Adjectives", difficulty: "easy", segment: "grammar" },
+    { text: "Correct colon: hiker packed several items ______ water, snacks, map.", options: [":", ";", ",", "no punctuation"], answer: 0, explanation: "Colon after complete clause.", skill: "Grammar: Punctuation", difficulty: "easy", segment: "grammar" },
+    { text: "Phrase 'through the open window' starts with:", options: ["Adjective", "Preposition", "Proper noun", "Verb"], answer: 1, explanation: "'through' is a preposition.", skill: "Grammar: Prepositional Phrases", difficulty: "easy", segment: "grammar" },
+    { text: "Absolute phrase: '______, the team celebrated.'", options: ["Winning the game", "The game won", "The game having been won", "After they won"], answer: 2, explanation: "Noun + participle absolute phrase.", skill: "Grammar: Absolute Phrases", difficulty: "medium", segment: "grammar" }
+  ];
+
+  // Shuffle options for every question in all tests
+  function shuffleAllQuestions(rawArray) {
+    return rawArray.map(q => {
+      const { options, answer } = shuffleOptions(q.options, q.answer);
+      return { ...q, options, answer };
+    });
+  }
+
+  const test1Questions = shuffleAllQuestions(test1Raw);
+  const test2Questions = shuffleAllQuestions(test2Raw);
+  const test3Questions = shuffleAllQuestions(test3Raw);
+  const test4Questions = shuffleAllQuestions(test4Raw);
+
+  const tests = {
+    test1: { questions: test1Questions, passage: test1Passage },
+    test2: { questions: test2Questions, passage: test2Passage },
+    test3: { questions: test3Questions, passage: test3Passage },
+    test4: { questions: test4Questions, passage: test4Passage }
+  };
+
+  // Render function with sticky progress showing correct & incorrect counts
+  function renderTest(panelId, testData, testName) {
+    const panel = document.getElementById(panelId);
+    panel.innerHTML = '';
+    const total = testData.questions.length;
+    let answered = 0, correct = 0;
+    const state = { locked: new Array(total).fill(false), selected: new Array(total).fill(null) };
+    
+    const stickyBar = document.createElement('div');
+    stickyBar.className = 'test-sticky-bar';
+    stickyBar.innerHTML = `
+      <div class="score-stats">
+        <span>✅ <span class="score-correct" id="correct-count-${testName}">0</span></span>
+        <span>❌ <span class="score-incorrect" id="incorrect-count-${testName}">0</span></span>
+        <span>📋 <span id="answered-count-${testName}">0</span>/${total}</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label">Overall progress</div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill-${testName}" style="width:0%"></div></div>
+      </div>
+      <div id="final-${testName}"></div>
+    `;
+    panel.appendChild(stickyBar);
+    const container = document.createElement('div');
+    panel.appendChild(container);
+    
+    function updateUI() {
+      const pct = (answered/total)*100;
+      document.getElementById(`progress-fill-${testName}`).style.width = `${pct}%`;
+      document.getElementById(`answered-count-${testName}`).innerText = answered;
+      document.getElementById(`correct-count-${testName}`).innerText = correct;
+      document.getElementById(`incorrect-count-${testName}`).innerText = answered - correct;
+      if (answered === total) {
+        let finalDiv = panel.querySelector('.final-result');
+        if (!finalDiv) { finalDiv = document.createElement('div'); finalDiv.className = 'final-result'; panel.appendChild(finalDiv); }
+        const percent = Math.round((correct/total)*100);
+        finalDiv.innerHTML = `<h3>🎉 ${testName} Complete!</h3><div style="font-size:2rem;">${correct}/${total} (${percent}%)</div><button class="retry-btn" onclick="window.retryTest('${testName}')">⟳ Retry Test</button>`;
+      } else {
+        const existing = panel.querySelector('.final-result');
+        if(existing) existing.remove();
+      }
+    }
+    
+    const segments = [
+      { name: "I. Reading Comprehension", key: "reading", passage: testData.passage },
+      { name: "II. Vocabulary", key: "vocab", passage: null },
+      { name: "III. Literature", key: "literature", passage: null },
+      { name: "IV. Grammar", key: "grammar", passage: null }
+    ];
+    let globalIdx = 0;
+    for (let seg of segments) {
+      const segQs = testData.questions.filter(q => q.segment === seg.key);
+      if (segQs.length === 0) continue;
+      const header = document.createElement('div'); header.className = 'segment-header'; header.innerText = seg.name; container.appendChild(header);
+      if (seg.passage) {
+        const pDiv = document.createElement('div'); pDiv.className = 'passage-box'; pDiv.innerHTML = `<strong>📖 Passage:</strong><br>${seg.passage}`; container.appendChild(pDiv);
+      }
+      segQs.forEach((q) => {
+        const idx = globalIdx++;
+        const card = document.createElement('div'); card.className = 'q-card';
+        card.innerHTML = `
+          <div class="q-header"><span class="q-num">Q${idx+1}</span><span class="skill-badge">${q.skill}</span><span class="diff-badge diff-${q.difficulty}">${q.difficulty.toUpperCase()}</span></div>
+          <div class="q-body"><div class="q-text">${q.text}</div><div class="options" id="opts-${testName}-${idx}"></div><button class="check-btn" id="check-${testName}-${idx}" disabled>Check Answer</button><div class="feedback" id="fb-${testName}-${idx}"></div></div>
+        `;
+        container.appendChild(card);
+        const optsDiv = card.querySelector('.options');
+        q.options.forEach((opt, oi) => {
+          const btn = document.createElement('button'); btn.className = 'option-btn'; btn.innerText = `${String.fromCharCode(65+oi)}. ${opt}`;
+          btn.addEventListener('click', () => {
+            if (state.locked[idx]) return;
+            optsDiv.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.selected[idx] = oi;
+            document.getElementById(`check-${testName}-${idx}`).disabled = false;
+          });
+          optsDiv.appendChild(btn);
+        });
+        const checkBtn = card.querySelector('.check-btn');
+        checkBtn.addEventListener('click', () => {
+          if (state.locked[idx]) return;
+          const selected = state.selected[idx];
+          if (selected === undefined) return;
+          const isCorrect = (selected === q.answer);
+          state.locked[idx] = true; answered++; if(isCorrect) correct++;
+          updateUI();
+          const opts = optsDiv.querySelectorAll('.option-btn');
+          opts.forEach(b => b.disabled = true);
+          opts[q.answer].classList.add('correct');
+          if(!isCorrect) opts[selected].classList.add('incorrect');
+          const fbDiv = card.querySelector('.feedback');
+          fbDiv.style.display = 'block';
+          fbDiv.className = `feedback ${isCorrect?'correct':'incorrect'}`;
+          fbDiv.innerHTML = isCorrect ? `✅ ${q.explanation}` : `❌ Correct: ${q.options[q.answer]}. ${q.explanation}`;
+          checkBtn.disabled = true;
+        });
+      });
+    }
+    updateUI();
+    window[`retryTest_${testName}`] = () => renderTest(panelId, testData, testName);
+  }
+  window.retryTest = (testId) => {
+    if(testId === 'Test1') renderTest('test1-panel', tests.test1, 'Test1');
+    if(testId === 'Test2') renderTest('test2-panel', tests.test2, 'Test2');
+    if(testId === 'Test3') renderTest('test3-panel', tests.test3, 'Test3');
+    if(testId === 'Test4') renderTest('test4-panel', tests.test4, 'Test4');
+  };
+  
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const testId = btn.dataset.test;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(`${testId}-panel`).classList.add('active');
+    });
+  });
+  
+  // Initial render
+  renderTest('test1-panel', tests.test1, 'Test1');
+  renderTest('test2-panel', tests.test2, 'Test2');
+  renderTest('test3-panel', tests.test3, 'Test3');
+  renderTest('test4-panel', tests.test4, 'Test4');
+</script>
+</body>
+</html>
