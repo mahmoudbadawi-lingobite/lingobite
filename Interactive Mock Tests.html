@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ELA Mock Tests | Grade 10 | Fixed Progress Bar + Locked Answers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d1b2a;
+            --gold: #c9993f;
+            --gold-lt: #e8be72;
+            --bg: #faf6ef;
+            --white: #ffffff;
+            --text: #1a2a6c;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --card-border: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding-top: 90px; /* Space for fixed progress bar */
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            padding-bottom: 2rem;
+        }
+
+        /* Fixed Progress Bar (always on top) */
+        .fixed-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            z-index: 1000;
+            padding: 0.8rem 2rem;
+            border-bottom: 3px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            backdrop-filter: blur(0px);
+            max-width: 1400px;
+            margin: 0 auto;
+            border-radius: 0 0 1rem 1rem;
+        }
+        .stats-box {
+            display: flex;
+            gap: 1.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .stat {
+            background: #f8f4ed;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            color: var(--primary);
+        }
+        .stat span {
+            font-weight: 800;
+            color: var(--gold);
+        }
+        .progress-bar-container {
+            flex: 1;
+            min-width: 180px;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #2e7d32;
+            transition: width 0.2s ease;
+            border-radius: 10px;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary);
+            padding: 1.2rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-bottom: 5px solid var(--gold);
+        }
+        .title-section {
+            color: white;
+        }
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f8fafc, var(--gold-lt));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .designer {
+            font-size: 0.9rem;
+            color: var(--gold-lt);
+            margin-top: 0.2rem;
+            font-weight: 500;
+        }
+        .profile-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--gold);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-bar {
+            display: flex;
+            background: var(--white);
+            border-bottom: 2px solid #e2e8f0;
+            padding: 0 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 1rem 0.8rem;
+            cursor: pointer;
+            color: var(--primary);
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-btn.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
+        .tab-btn:hover:not(.active) {
+            color: var(--gold-lt);
+        }
+
+        .test-container {
+            padding: 0 2rem 2rem 2rem;
+            background: var(--white);
+        }
+
+        .passage-box {
+            background: #fef8e7;
+            border-left: 5px solid var(--gold);
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0.8rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #2d2f36;
+        }
+
+        .part-title {
+            font-size: 1.5rem;
+            font-family: 'Playfair Display', serif;
+            margin: 1.5rem 0 1rem 0;
+            color: var(--primary);
+            border-bottom: 2px solid var(--gold-lt);
+            display: inline-block;
+            padding-bottom: 0.3rem;
+        }
+
+        .question-card {
+            background: var(--white);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            margin-bottom: 1.2rem;
+        }
+        .question-text {
+            font-weight: 700;
+            padding: 1rem 1.2rem;
+            background: #f8f4ed;
+            border-radius: 1rem 1rem 0 0;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+        .options {
+            padding: 0.8rem 1.2rem 0.5rem 1.2rem;
+        }
+        .option {
+            margin: 0.4rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+        }
+        .option input {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        .option input:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .option label {
+            font-weight: normal;
+            color: #1e293b;
+            cursor: pointer;
+            flex: 1;
+        }
+        .feedback-badge {
+            margin: 0.2rem 1.2rem 0.8rem 1.2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.7rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: none;
+        }
+        .feedback-badge.correct {
+            display: block;
+            background: #e8f5e9;
+            color: #1e4620;
+            border-left: 4px solid #2e7d32;
+        }
+        .feedback-badge.incorrect {
+            display: block;
+            background: #ffebee;
+            color: #b71c1c;
+            border-left: 4px solid #d32f2f;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            padding: 1.2rem;
+            border-top: 1px solid #e2e8f0;
+            background: #fafcff;
+            color: #5b6e8c;
+        }
+        @media (max-width: 680px) {
+            .test-container { padding: 0 1rem 1rem 1rem; }
+            .tab-bar { padding: 0 1rem; }
+            .fixed-progress { padding: 0.6rem 1rem; flex-direction: column; align-items: stretch; }
+            .stats-box { justify-content: space-between; }
+            body { padding-top: 110px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Fixed Progress Bar (always visible) -->
+<div class="fixed-progress" id="fixedProgressBar">
+    <div class="stats-box">
+        <div class="stat">✅ Correct: <span id="statCorrect">0</span></div>
+        <div class="stat">❌ Incorrect: <span id="statIncorrect">0</span></div>
+        <div class="stat">📝 Answered: <span id="statAnswered">0</span> / <span id="statTotal">0</span></div>
+    </div>
+    <div class="progress-bar-container">
+        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+    </div>
+</div>
+
+<div class="main-container">
+    <div class="header">
+        <div class="title-section">
+            <div class="main-title">📚 English Language Arts · Mock Tests</div>
+            <div class="designer">designed by: Mahmoud Badawi | Fixed progress bar • Locked answers</div>
+        </div>
+        <img class="profile-img" src="https://i.postimg.cc/c13vPxCY/Upload.jpg" alt="Mahmoud Badawi">
+    </div>
+
+    <div class="tab-bar" id="tabBar">
+        <button class="tab-btn active" data-test="0">📘 Mock Test 1</button>
+        <button class="tab-btn" data-test="1">📖 Mock Test 2</button>
+        <button class="tab-btn" data-test="2">⚡ Mock Test 3</button>
+        <button class="tab-btn" data-test="3">🚀 Mock Test 4</button>
+    </div>
+    
+    <div id="testContainer" class="test-container"></div>
+    <footer>✅ Once you select an answer, it is locked. Refresh page to reset all answers. Progress bar stays fixed at the top while scrolling.</footer>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // COMPLETE MOCK TEST DATA (validated)
+    // --------------------------------------------------------------
+    const mockTests = [];
+
+    // MOCK TEST 1
+    const mock1Passage = `The deep ocean remains one of the least explored frontiers on our planet. While modern satellites have mapped the surface of Mars with stunning precision, more than eighty percent of Earth's oceans remain unmapped and unobserved. The immense hydrostatic pressure, crushing darkness, and freezing temperatures make the abyssal zone an incredibly hostile environment for human exploration. However, recent advancements in autonomous underwater vehicles (AUVs) have allowed scientists to bypass human limitations. These robotic submarines are equipped with high-resolution sonar and advanced sensory equipment, capable of descending thousands of meters to document previously unknown ecosystems. Hydrothermal vents, for instance, host unique biological communities that thrive on chemosynthesis rather than sunlight. As technology continues to evolve, these deep-sea expeditions are not merely satisfying scientific curiosity; they are uncovering invaluable resources and novel biochemical compounds that hold significant promise for future pharmaceutical breakthroughs.`;
+    mockTests[0] = {
+        name: "Mock Test 1",
+        reading: { passage: mock1Passage, questions: [
+            { text: "Which statement best expresses the main idea of the passage?", options: ["A. Satellites are currently the best tool for mapping the Earth's deep ocean floors.", "B. Ocean exploration is driven primarily by the need for new pharmaceutical drugs.", "C. Technological advancements are enabling the exploration of the harsh deep ocean.", "D. Deep-sea biological communities are entirely dependent on sunlight for survival."], correct: "C" },
+            { text: "Based on the text, what can be reasonably inferred about human deep-sea divers?", options: ["A. They frequently visit hydrothermal vents to collect new biochemical compounds.", "B. They face significant physiological limitations and dangers in the abyssal zone.", "C. They are primarily responsible for the operation of autonomous underwater vehicles.", "D. They have successfully mapped more than eighty percent of the world's oceans."], correct: "B" },
+            { text: "Which detail from the passage best supports the claim that AUVs are highly capable?", options: ["A. They operate in areas where the temperatures are freezing and sunlight is absent.", "B. They are equipped with high-resolution sonar and advanced sensory equipment.", "C. They have successfully mapped the surface of Mars with stunning precision.", "D. They are uncovering invaluable resources and novel biochemical compounds."], correct: "B" },
+            { text: "As used in the passage, the word 'hostile' most nearly means:", options: ["A. Exceptionally welcoming and beneficial.", "B. Extremely unfavorable and dangerous.", "C. Surprisingly complex and mysterious.", "D. Significantly crowded and competitive."], correct: "B" },
+            { text: "How does the author organize the information in the passage?", options: ["A. By presenting a challenge and detailing the technological solution addressing it.", "B. By comparing the marine biology of Earth to the terrestrial biology found on Mars.", "C. By outlining the chronological history of oceanic exploration over the last century.", "D. By listing the financial costs of building autonomous underwater vehicles today."], correct: "A" }
+        ]},
+        vocab: { questions: [
+            { text: "Because the city council lacked the necessary ______ over the neighboring county, they could not enforce the new zoning laws there.", options: ["A. Jurisdiction", "B. Deficiency", "C. Adolescent", "D. Prospect"], correct: "A" },
+            { text: "Which of the following is the best synonym for the word retort?", options: ["A. Complain", "B. Surrender", "C. Counter", "D. Question"], correct: "C" },
+            { text: "What is the best antonym for the word solemn?", options: ["A. Serious", "B. Cheerful", "C. Anxious", "D. Dignified"], correct: "B" },
+            { text: "The mechanic noticed a slow dribble of oil leaking from the undercarriage... In this context, dribble means:", options: ["A. A powerful, rushing torrent.", "B. A steady, unyielding stream.", "C. A small, trickling leakage.", "D. A sudden, explosive burst."], correct: "C" },
+            { text: "The word adolescent contains roots related to growing up. Which best defines an adolescent?", options: ["A. An elderly individual reflecting on their life.", "B. A professional managing an organization.", "C. A young person transitioning to adulthood.", "D. An infant heavily reliant on their parents."], correct: "C" },
+            { text: "The farmer's crops suffered a severe nutrient ______, causing the leaves to turn yellow.", options: ["A. Jurisdiction", "B. Deficiency", "C. Element", "D. Battery"], correct: "B" },
+            { text: "Which word is the closest synonym to furtively?", options: ["A. Openly", "B. Secretly", "C. Loudly", "D. Clumsily"], correct: "B" },
+            { text: "What is the most accurate antonym for the word awkward?", options: ["A. Graceful", "B. Unwieldy", "C. Difficult", "D. Confusing"], correct: "A" },
+            { text: "The general's command was absolute; when he spoke, every soldier stopped. Here, command implies:", options: ["A. A polite request.", "B. A casual suggestion.", "C. An authoritative order.", "D. A friendly greeting."], correct: "C" },
+            { text: "After spending the entire winter hiking in the snowy mountains, the explorer returned with a healthy, ______ completion.", options: ["A. Solemn", "B. Ruddy", "C. Awkward", "D. Furtive"], correct: "B" }
+        ]},
+        lit: { questions: [
+            { text: "A narrator states: 'I knew the referee was biased because he smiled at the opposing coach before the game started.' Why should a reader question this narrator's reliability?", options: ["A. The narrator is an omniscient observer who knows all thoughts.", "B. The narrator relies on an objective fact to prove their assertion.", "C. The narrator's claim is based on a highly subjective assumption.", "D. The narrator is using a third-person limited narrative perspective."], correct: "C" },
+            { text: "'The alarm clock was a demanding drill sergeant, shouting at me to start the day.' This sentence is an example of:", options: ["A. Simile", "B. Metaphor", "C. Onomatopoeia", "D. Personification"], correct: "B" },
+            { text: "A poem consists of four lines where the last words of the first and third lines rhyme, and the second and fourth lines rhyme. This represents:", options: ["A. An AABB rhyme scheme.", "B. An ABAB rhyme scheme.", "C. A completely free verse.", "D. An unpredictable meter."], correct: "B" },
+            { text: "A filmmaker uses a harsh, cold blue color palette and sharp camera angles during a scene. What is the intended psychological effect?", options: ["A. To evoke feelings of warmth, safety, and deep comfort.", "B. To create an atmosphere of tension, isolation, or dread.", "C. To simulate the experience of a joyful summer vacation.", "D. To appeal directly to the viewer's logical reasoning."], correct: "B" },
+            { text: "An author writes an article detailing the exact percentage of water wasted by dripping faucets to encourage readers to fix their plumbing. The intent is to:", options: ["A. Entertain and confuse.", "B. Inform and persuade.", "C. Narrate and reflect.", "D. Describe and distract."], correct: "B" },
+            { text: "'The old wooden floorboards groaned and complained under the weight of the heavy safe.' This demonstrates:", options: ["A. Simile", "B. Metaphor", "C. Personification", "D. Onomatopoeia"], correct: "C" },
+            { text: "A story uses 'he' and 'she' but only reveals the inner thoughts of the protagonist. This is:", options: ["A. First-Person POV.", "B. Third-Person Limited POV.", "C. Third-Person Omniscient POV.", "D. Second-Person Objective POV."], correct: "B" },
+            { text: "Poetry that deliberately avoids a regular meter, predictable rhyme patterns, and fixed stanza lengths is called:", options: ["A. A Sonnet", "B. Free Verse", "C. A Rhyme Scheme", "D. A Formal Stanza"], correct: "B" },
+            { text: "'The bacon sizzled and popped violently in the hot frying pan.' The words 'sizzled' and 'popped' are examples of:", options: ["A. Onomatopoeia", "B. Metaphor", "C. Simile", "D. Personification"], correct: "A" },
+            { text: "A radio commercial features crackling campfire, crickets chirping, and soft acoustic guitar. This auditory component is designed to:", options: ["A. Present logical arguments for buying camping gear.", "B. Inform listeners about the dangers of forest fires.", "C. Evoke a relaxing, nostalgic emotional response.", "D. Confuse the audience regarding the actual product."], correct: "C" }
+        ]},
+        grammar: { questions: [
+            { text: "Which sentence correctly uses capitalization for a proper adjective?", options: ["A. She bought a beautiful French pastry from the local bakery.", "B. She bought a beautiful french Pastry from the local bakery.", "C. She bought a beautiful French Pastry from the local Bakery.", "D. She bought a beautiful french pastry from the local Bakery."], correct: "A" },
+            { text: "Choose the grammatically correct sentence:", options: ["A. The manager, along with his dedicated employees, are attending the conference.", "B. The manager, along with his dedicated employees, is attending the conference.", "C. The manager, along with his dedicated employees, were attending the conference.", "D. The manager, along with his dedicated employees, have attended the conference."], correct: "B" },
+            { text: "Identify the prepositional phrase: 'The curious cat crawled under the heavy wooden porch.'", options: ["A. The curious cat", "B. cat crawled under", "C. under the heavy wooden porch", "D. crawled under the heavy"], correct: "C" },
+            { text: "Which sentence uses the comparative modifier correctly?", options: ["A. After much practice, David plays the piano more better than he used to.", "B. After much practice, David plays the piano better than he used to.", "C. After much practice, David plays the piano most better than he used to.", "D. After much practice, David plays the piano more well than he used to."], correct: "B" },
+            { text: "Which sentence correctly uses a semicolon?", options: ["A. The project deadline was approaching quickly; but we were completely unprepared.", "B. The project deadline was approaching quickly; therefore, we worked through the night.", "C. We needed several supplies for the project including; glue, scissors, and paper.", "D. Because the project deadline was approaching quickly; we worked through the night."], correct: "B" }
+        ]}
+    };
+
+    // MOCK TEST 2 (rewilding)
+    const mock2Passage = `The concept of "rewilding" has gained significant traction among modern conservationists. Unlike traditional conservation, which often seeks to preserve an ecosystem exactly as it currently is, rewilding involves restoring an area to its natural, uncultivated state. This ambitious process often includes the reintroduction of apex predators that were previously driven to local extinction by human activity. For example, the reintroduction of gray wolves to Yellowstone National Park in 1995 dramatically altered the landscape. By controlling the overpopulated elk herds, the wolves allowed overgrazed vegetation, such as willow and aspen trees, to flourish once again. This botanical resurgence subsequently stabilized riverbanks and provided new habitats for beavers and songbirds. While rewilding can yield profound ecological benefits, it frequently encounters fierce opposition from local farmers and ranchers who fear that reintroduced predators will threaten their livestock and livelihoods. Consequently, successful rewilding initiatives require delicate compromises and robust compensation programs to ensure that human communities and wild ecosystems can coexist harmoniously.`;
+    mockTests[1] = {
+        name: "Mock Test 2",
+        reading: { passage: mock2Passage, questions: [
+            { text: "What is the primary focus of the passage?", options: ["A. The historical extinction of gray wolves in American national parks.", "B. The process and challenges of rewilding ecosystems.", "C. The agricultural techniques used by modern ranchers.", "D. A comparison of wolves and beavers in Yellowstone."], correct: "B" },
+            { text: "Based on the passage, what would likely happen if apex predators were permanently removed from a balanced ecosystem?", options: ["A. The local vegetation would grow uncontrollably.", "B. Prey populations would expand rapidly, leading to severe overgrazing.", "C. The riverbanks would become more stable.", "D. Local farmers would immediately abandon farming."], correct: "B" },
+            { text: "Which detail shows that rewilding goes beyond just protecting current environments?", options: ["A. It encounters fierce opposition from local farmers and ranchers.", "B. It involves restoring an area to its natural, uncultivated state.", "C. It controls the overpopulated elk herds found in national parks.", "D. It requires delicate compromises and robust compensation programs."], correct: "B" },
+            { text: "In context, 'resurgence' most nearly means:", options: ["A. Permanent decline", "B. Renewed growth or recovery", "C. Violent conflict", "D. Slight modification"], correct: "B" },
+            { text: "How does the author present the impact of gray wolves in Yellowstone?", options: ["A. As a theoretical model.", "B. As a cause-and-effect relationship demonstrating ecological recovery.", "C. As a chronological timeline.", "D. As a purely negative event."], correct: "B" }
+        ]},
+        vocab: { questions: [
+            { text: "The judge declared that the defendant had committed ______ after security footage showed him physically striking the victim.", options: ["A. Battery", "B. Element", "C. Prospect", "D. Deficiency"], correct: "A" },
+            { text: "Which word means the same as ostracizing?", options: ["A. Welcoming", "B. Excluding", "C. Celebrating", "D. Educating"], correct: "B" },
+            { text: "Choose the antonym of prospect (anticipation).", options: ["A. Impossibility", "B. Likelihood", "C. Expectation", "D. Opportunity"], correct: "A" },
+            { text: "The classroom was completely silent, filled with a solemn atmosphere. Solemn means:", options: ["A. Chaotically energetic", "B. Deeply serious", "C. Bright and cheerful", "D. Mildly annoying"], correct: "B" },
+            { text: "He moved through the dark kitchen, hoping not to wake his parents. ______.", options: ["A. Awkwardly", "B. Furtively", "C. Solemnly", "D. Ruddily"], correct: "B" },
+            { text: "Best synonym for adolescent:", options: ["A. Juvenile", "B. Elder", "C. Infant", "D. Professional"], correct: "A" },
+            { text: "Antonym of dribble:", options: ["A. Trickle", "B. Pour", "C. Drop", "D. Seep"], correct: "B" },
+            { text: "She found it very awkward to carry the massive sculpture. Awkward means:", options: ["A. Exceptionally easy", "B. Clumsy and unwieldy", "C. Lightweight", "D. Aesthetically pleasing"], correct: "B" },
+            { text: "When insulted, Maria was quick to ______ with a witty comeback.", options: ["A. Retort", "B. Command", "C. Ostracize", "D. Dribble"], correct: "A" }
+        ]},
+        lit: { questions: [
+            { text: "Translating a print ad to TV adds music/voiceover. These are:", options: ["A. Visual cues", "B. Auditory components", "C. Print semantics", "D. Denotative facts"], correct: "B" },
+            { text: "A narrator uses 'I' and 'we', shaped by personal bias. This is:", options: ["A. First-Person POV", "B. Third-Person Omniscient", "C. Second-Person Objective", "D. Third-Person Limited"], correct: "A" },
+            { text: "An author writes a novel featuring humorous characters to make readers laugh. Intent:", options: ["A. Inform", "B. Persuade", "C. Entertain", "D. Explain"], correct: "C" },
+            { text: "'The stars were diamonds scattered across the velvet canvas.' This is:", options: ["A. Simile", "B. Metaphor", "C. Personification", "D. Onomatopoeia"], correct: "B" },
+            { text: "Structural pattern formed by rhyming words at ends of lines:", options: ["A. Stanza format", "B. Meter rhythm", "C. Rhyme scheme", "D. Free verse"], correct: "C" },
+            { text: "'The wind howled fiercely through the broken windows.' This demonstrates:", options: ["A. Personification", "B. Simile", "C. Omniscience", "D. Stanza"], correct: "A" },
+            { text: "Food critic describes 'crisp crust that shatters to reveal velvety custard.' Appeals to:", options: ["A. Only hearing", "B. Logical reasoning", "C. Touch and taste", "D. Narrator unreliability"], correct: "C" },
+            { text: "Why is Third-Person Omniscient considered reliable?", options: ["A. Based on one character's emotions.", "B. Cannot access inner thoughts.", "C. All-knowing objective perspective.", "D. Participates actively in the plot."], correct: "C" },
+            { text: "Distinct group of lines forming a structural unit in a poem:", options: ["A. Syllable", "B. Stanza", "C. Scheme", "D. Metaphor"], correct: "B" },
+            { text: "'The runner crossed the finish line as swift as a cheetah.' This is:", options: ["A. Simile", "B. Metaphor", "C. Personification", "D. Onomatopoeia"], correct: "A" }
+        ]},
+        grammar: { questions: [
+            { text: "Identify absolute phrase: 'The storm finally passed, its heavy clouds breaking, to reveal a bright sun.'", options: ["A. The storm finally passed", "B. its heavy clouds breaking", "C. to reveal a bright sun", "D. finally passed, its heavy"], correct: "B" },
+            { text: "Correct use of colon:", options: ["A. The recipe calls for several fresh ingredients: basil, garlic, and olive oil.", "B. The recipe calls for: several fresh ingredients...", "C. We bought: basil, garlic...", "D. For: basil we need."], correct: "A" },
+            { text: "Correctly punctuated relative clause:", options: ["A. The book which was covered in dust, sat...", "B. The book, that was covered in dust sat...", "C. The book, which was covered in dust, sat...", "D. The book which, was covered in dust sat..."], correct: "C" },
+            { text: "Subject-verb agreement: The primary computer, in addition to the backup servers, ______ crashed.", options: ["A. have", "B. are", "C. has", "D. were"], correct: "C" },
+            { text: "Correct capitalization: 'The museum features a massive collection of ______ artifacts.'", options: ["A. ancient Egyptian", "B. Ancient Egyptian Artifacts", "C. ancient egyptian", "D. ancient egyptian Artifacts"], correct: "A" }
+        ]}
+    };
+
+    // MOCK TEST 3 (urban soundscapes)
+    const mock3Passage = `Urban soundscapes are fundamentally altering the way wildlife communicates. In natural environments, bird songs travel smoothly through forests, allowing species to attract mates and defend territories. However, the relentless low-frequency rumble of city traffic masks these crucial acoustic signals. To adapt, many urban bird species have measurably altered their vocalizations. For instance, city-dwelling robins and tits now sing at significantly higher pitches than their rural counterparts. By raising the frequency, they prevent their calls from being drowned out. Additionally, some species have shifted to singing late at night. While these adaptations highlight resilience, scientists warn that altering mating calls could eventually lead to genetic divergence.`;
+    mockTests[2] = {
+        name: "Mock Test 3",
+        reading: { passage: mock3Passage, questions: [
+            { text: "What is the central idea of the passage?", options: ["A. Rural birds are physically larger.", "B. Urban noise pollution forces city birds to adapt their songs.", "C. Traffic noise should be legally limited.", "D. Birds use songs only to defend territories."], correct: "B" },
+            { text: "What can be inferred about birds that fail to adapt their songs?", options: ["A. They will use visual cues instead.", "B. They will struggle to attract mates and reproduce.", "C. They will evolve into a new species immediately.", "D. They will permanently lose ability to sing."], correct: "B" },
+            { text: "Which detail supports that birds change communication?", options: ["A. Robins sing at higher pitches.", "B. Low-frequency rumble masks signals.", "C. Some shift singing to late night.", "D. All of the above."], correct: "D" },
+            { text: "What does 'anthropogenic' most likely mean?", options: ["A. Originating from natural patterns", "B. Caused by human activity", "C. Related to genetic mutation", "D. Occurring at night"], correct: "B" },
+            { text: "How is the first paragraph structured?", options: ["A. Contrasts natural condition with urban disruption.", "B. Chronological history.", "C. Compares visual capabilities.", "D. Lists benefits of pollution."], correct: "A" }
+        ]},
+        vocab: { questions: [
+            { text: "The military regiment deployed heavy ______ along the ridge.", options: ["A. Artillery", "B. Element", "C. Prospect", "D. Battery"], correct: "A" },
+            { text: "Best synonym for jurisdiction:", options: ["A. Limitation", "B. Authority", "C. Weakness", "D. Ignorance"], correct: "B" },
+            { text: "Antonym for retort:", options: ["A. Agree", "B. Snap", "C. Counter", "D. Argue"], correct: "A" },
+            { text: "Ostracizing means:", options: ["A. Praising highly", "B. Investigating", "C. Shunning socially", "D. Defending fiercely"], correct: "C" },
+            { text: "Deficiency implies:", options: ["A. Overly abundant", "B. Lacking or missing", "C. Completely functional", "D. Artificially created"], correct: "B" },
+            { text: "The young inventor was thrilled by the ______ of presenting her design.", options: ["A. Prospect", "B. Deficiency", "C. Battery", "D. Adolescent"], correct: "A" },
+            { text: "Synonym of command:", options: ["A. Follow", "B. Order", "C. Assist", "D. Ignore"], correct: "B" },
+            { text: "Antonym of ruddy (complexion):", options: ["A. Flushed", "B. Glowing", "C. Pale", "D. Healthy"], correct: "C" },
+            { text: "Furtively means:", options: ["A. Loudly", "B. Secretly", "C. Bravely", "D. Slowly"], correct: "B" },
+            { text: "Understanding algebra is a crucial ______ for physics.", options: ["A. Element", "B. Battery", "C. Retort", "D. Dribble"], correct: "A" }
+        ]},
+        lit: { questions: [
+            { text: "'The bees buzzed and hummed' uses:", options: ["A. Metaphor", "B. Simile", "C. Onomatopoeia", "D. Personification"], correct: "C" },
+            { text: "Essay arguing digital curriculum prepares students, urges schools to change. Intent:", options: ["A. Persuade", "B. Entertain", "C. Describe", "D. Confuse"], correct: "A" },
+            { text: "Regular pattern of unstressed/stressed syllables is:", options: ["A. Stanza", "B. Meter", "C. Free Verse", "D. Rhyme Scheme"], correct: "B" },
+            { text: "Bright morning sunlight streaming through trees is a:", options: ["A. Visual cue for positive mood", "B. Auditory component", "C. Print semantics", "D. Denotative fact"], correct: "A" },
+            { text: "'His heart was a fragile glass vase' uses:", options: ["A. Simile", "B. Metaphor", "C. Personification", "D. Onomatopoeia"], correct: "B" },
+            { text: "Why remain skeptical of a First-Person narrator?", options: ["A. They deliver objective evidence", "B. Interpretation influenced by self-perception", "C. They know all characters' histories", "D. Cannot participate in events"], correct: "B" },
+            { text: "'Rough, sandpaper-like texture' appeals to:", options: ["A. Sight", "B. Smell", "C. Touch", "D. Taste"], correct: "C" },
+            { text: "All-knowing outside perspective reveals all characters' thoughts:", options: ["A. Omniscient POV", "B. Limited POV", "C. First-Person", "D. Objective"], correct: "A" },
+            { text: "AABB rhyme scheme means:", options: ["A. First & third rhyme, second & fourth rhyme", "B. First & second rhyme, third & fourth rhyme", "C. All four rhyme", "D. No rhymes"], correct: "B" },
+            { text: "'The angry storm swallowed the small fishing boat' is:", options: ["A. Simile", "B. Metaphor", "C. Personification", "D. Onomatopoeia"], correct: "C" }
+        ]},
+        grammar: { questions: [
+            { text: "Avoids double comparative:", options: ["A. more better", "B. much better", "C. most best", "D. more well"], correct: "B" },
+            { text: "Prepositional phrase 'behind the dusty couch' acts as:", options: ["A. Noun", "B. Adverb showing location", "C. Action verb", "D. Conjunction"], correct: "B" },
+            { text: "Correct semicolon use:", options: ["A. steep and dangerous; but we decided", "B. steep and dangerous; however, the view", "C. Because steep; we walked", "D. steep; and dangerous"], correct: "B" },
+            { text: "The novel, as well as the short stories, ______ required.", options: ["A. are", "B. were", "C. is", "D. have been"], correct: "C" },
+            { text: "Correct absolute phrase:", options: ["A. Because the game was tied", "B. The game being tied", "C. The game was tied, and", "D. Whenever the game was tied"], correct: "B" }
+        ]}
+    };
+
+    // MOCK TEST 4 (space junk)
+    const mock4Passage = `The phenomenon of "space junk," or orbital debris, poses a critical threat to modern satellite communications. Since the 1950s, thousands of rockets have left defunct machinery cluttering low Earth orbit. Because objects travel at speeds exceeding 17,500 mph, even a paint fleck can damage satellites. This creates the Kessler Syndrome: a scenario where a single collision triggers a runaway chain reaction. If left unmitigated, certain orbital altitudes could become unusable. Engineers are developing magnetic nets and robotic capture arms to clean debris.`;
+    mockTests[3] = {
+        name: "Mock Test 4",
+        reading: { passage: mock4Passage, questions: [
+            { text: "What is the main idea?", options: ["A. Satellites are too expensive.", "B. Space debris is a growing danger threatening global technology.", "C. The ISS is responsible for debris.", "D. Global telecommunications are unusable."], correct: "B" },
+            { text: "What can be inferred about speed of objects in orbit?", options: ["A. Makes cleanup safe", "B. Causes satellites to slow down", "C. Amplifies destructive power of small debris", "D. Prevents Kessler Syndrome"], correct: "C" },
+            { text: "What specific technology are engineers developing?", options: ["A. High-resolution sonar", "B. Reflective cool roofs", "C. Magnetic nets and robotic capture arms", "D. Hydroponic systems"], correct: "C" },
+            { text: "Defunct most nearly means:", options: ["A. Highly energetic", "B. No longer functioning", "C. Newly manufactured", "D. Extremely expensive"], correct: "B" },
+            { text: "How does the author explain Kessler Syndrome?", options: ["A. Theoretical chain reaction of collisions", "B. Comparing to cooling processes", "C. Financial costs of broken satellites", "D. Listing probes since 1950s"], correct: "A" }
+        ]},
+        vocab: { questions: [
+            { text: "The manager never criticized or ______ his employees.", options: ["A. Demean", "B. Command", "C. Dribble", "D. Retort"], correct: "A" },
+            { text: "Synonym for awkward:", options: ["A. Graceful", "B. Unwieldy", "C. Fluent", "D. Precise"], correct: "B" },
+            { text: "Antonym of deficiency:", options: ["A. Shortage", "B. Abundance", "C. Lack", "D. Flaw"], correct: "B" },
+            { text: "Prospect means:", options: ["A. Legal jurisdiction", "B. Formal order", "C. Likelihood of future event", "D. Illegal force"], correct: "C" },
+            { text: "If a meeting is solemn, the tone is:", options: ["A. Grave and serious", "B. Casual and humorous", "C. Fast-paced", "D. Disorganized"], correct: "A" },
+            { text: "Basketball player charged with ______ after throwing a punch.", options: ["A. Battery", "B. Jurisdiction", "C. Element", "D. Prospect"], correct: "A" },
+            { text: "Synonym of ruddy:", options: ["A. Pale", "B. Reddish", "C. Sallow", "D. Sickly"], correct: "B" },
+            { text: "Antonym of ostracizing:", options: ["A. Banishing", "B. Ignoring", "C. Including", "D. Rejecting"], correct: "C" },
+            { text: "Water is a crucial ______ for life. Element means:", options: ["A. Minor addition", "B. Fundamental component", "C. Legal jurisdiction", "D. Witty retort"], correct: "B" },
+            { text: "______ years are vital for self-discovery.", options: ["A. Solemn", "B. Furtive", "C. Adolescent", "D. Awkward"], correct: "C" }
+        ]},
+        lit: { questions: [
+            { text: "'The skyscraper was a towering giant, watching over the city' uses:", options: ["A. Personification", "B. Simile", "C. Metaphor", "D. Onomatopoeia"], correct: "C" },
+            { text: "Narrative using 'he/she' with one character's inner thoughts:", options: ["A. Omniscient", "B. First-Person", "C. Limited POV", "D. Objective"], correct: "C" },
+            { text: "Author uses alarming assertions about environment to convince. Intent:", options: ["A. Inform and Persuade", "B. Entertain", "C. Confuse", "D. Narrate"], correct: "A" },
+            { text: "Soft background music in a film is:", options: ["A. Visual cues", "B. Auditory components", "C. Sensory typography", "D. Formal stanzas"], correct: "B" },
+            { text: "Free verse poetry lacks:", options: ["A. Emotional depth", "B. Sensory language", "C. Regular meter and predictable rhyme", "D. Words"], correct: "C" },
+            { text: "'The leaves danced playfully' is:", options: ["A. Metaphor", "B. Simile", "C. Personification", "D. Onomatopoeia"], correct: "C" },
+            { text: "First-person limited narrators require cross-reference because:", options: ["A. Always tells objective truth", "B. Version may be distorted by bias", "C. All-knowing entity", "D. Separated from plot"], correct: "B" },
+            { text: "'Smooth, buttery leather seats' appeals to sense of:", options: ["A. Sight", "B. Smell", "C. Touch", "D. Hearing"], correct: "C" },
+            { text: "Rhythm in poetry is pattern of:", options: ["A. Nouns and adjectives", "B. Unstressed/stressed syllables", "C. Semicolons", "D. Pronouns"], correct: "B" },
+            { text: "'Her smile was as bright as the morning sun' is:", options: ["A. Personification", "B. Metaphor", "C. Simile", "D. Onomatopoeia"], correct: "C" }
+        ]},
+        grammar: { questions: [
+            { text: "Correct relative clause: 'The student ______ studied every night scored highest.'", options: ["A. who studied every night scored", "B. who studied every night, scored", "C. who, studied every night scored", "D. who studied every night scored highest (no comma)"], correct: "A" },
+            { text: "The captain, together with his crew, ______ on the ship.", options: ["A. remain", "B. remains", "C. are remaining", "D. have remained"], correct: "B" },
+            { text: "Correct capitalization: 'We ate a traditional ______ dinner.'", options: ["A. Japanese", "B. japanese", "C. Japanese Dinner", "D. japanese dinner"], correct: "A" },
+            { text: "Which correctly introduces a list?", options: ["A. The hiker packed: water, snacks, and a map.", "B. The hiker packed several items, water, snacks, and a map.", "C. The hiker packed several items: water, snacks, and a map.", "D. The hiker packed several items; water, snacks, and a map."], correct: "C" },
+            { text: "Prepositional phrase starts with:", options: ["A. Adjective", "B. Preposition", "C. Proper noun", "D. Action verb"], correct: "B" }
+        ]}
+    };
+
+    // --------------------------------------------------------------
+    // GLOBAL STATE
+    // --------------------------------------------------------------
+    const testsTotalQuestions = [];
+    const allQuestionsCorrect = [];
+    for (let t = 0; t < mockTests.length; t++) {
+        const test = mockTests[t];
+        const questions = [];
+        test.reading.questions.forEach(q => questions.push(q.correct));
+        test.vocab.questions.forEach(q => questions.push(q.correct));
+        test.lit.questions.forEach(q => questions.push(q.correct));
+        test.grammar.questions.forEach(q => questions.push(q.correct));
+        testsTotalQuestions[t] = questions.length;
+        allQuestionsCorrect[t] = questions;
+    }
+
+    let answerState = [];
+    for (let t = 0; t < mockTests.length; t++) {
+        answerState[t] = [];
+        for (let i = 0; i < testsTotalQuestions[t]; i++) {
+            answerState[t][i] = { answered: false, selected: null, isCorrect: false };
+        }
+    }
+
+    function updateFixedProgressBar(testIndex) {
+        const total = testsTotalQuestions[testIndex];
+        let answered = 0, correct = 0, incorrect = 0;
+        for (let i = 0; i < total; i++) {
+            if (answerState[testIndex][i].answered) {
+                answered++;
+                if (answerState[testIndex][i].isCorrect) correct++;
+                else incorrect++;
+            }
+        }
+        const percent = total === 0 ? 0 : (answered / total) * 100;
+        document.getElementById('statCorrect').innerText = correct;
+        document.getElementById('statIncorrect').innerText = incorrect;
+        document.getElementById('statAnswered').innerText = answered;
+        document.getElementById('statTotal').innerText = total;
+        document.getElementById('progressFill').style.width = percent + '%';
+    }
+
+    function updateQuestionState(testIndex, qIndex, selectedLetter, isCorrect) {
+        answerState[testIndex][qIndex] = { answered: true, selected: selectedLetter, isCorrect: isCorrect };
+        updateFixedProgressBar(testIndex);
+    }
+
+    function renderTest(testIndex) {
+        const test = mockTests[testIndex];
+        if (!test) return;
+        let html = `<h2 style="font-family:'Playfair Display'; color:var(--primary); margin-bottom:0.5rem;">${test.name}</h2>`;
+        let globalQIdx = 0;
+        
+        html += `<div class="part-title">📖 Part I: Reading Comprehension</div>`;
+        html += `<div class="passage-box">${test.reading.passage}</div>`;
+        test.reading.questions.forEach((q, idx) => {
+            html += renderQuestionCard(q, `r${idx}`, testIndex, globalQIdx);
+            globalQIdx++;
+        });
+        
+        html += `<div class="part-title">📚 Part II: Vocabulary</div>`;
+        test.vocab.questions.forEach((q, idx) => {
+            html += renderQuestionCard(q, `v${idx}`, testIndex, globalQIdx);
+            globalQIdx++;
+        });
+        
+        html += `<div class="part-title">🎭 Part III: Analytic Literary Skills</div>`;
+        test.lit.questions.forEach((q, idx) => {
+            html += renderQuestionCard(q, `l${idx}`, testIndex, globalQIdx);
+            globalQIdx++;
+        });
+        
+        html += `<div class="part-title">✍️ Part IV: Grammar Skills</div>`;
+        test.grammar.questions.forEach((q, idx) => {
+            html += renderQuestionCard(q, `g${idx}`, testIndex, globalQIdx);
+            globalQIdx++;
+        });
+        
+        document.getElementById("testContainer").innerHTML = html;
+        attachRadioEvents(testIndex);
+        updateFixedProgressBar(testIndex);
+    }
+
+    function renderQuestionCard(q, uniqueId, testIdx, qIdx) {
+        const state = answerState[testIdx][qIdx];
+        let optsHtml = '';
+        q.options.forEach(opt => {
+            const letter = opt.charAt(0);
+            const checkedAttr = (state.answered && state.selected === letter) ? 'checked' : '';
+            const disabledAttr = state.answered ? 'disabled' : '';
+            optsHtml += `<div class="option"><input type="radio" name="q_${uniqueId}" value="${letter}" id="opt_${uniqueId}_${letter}" ${checkedAttr} ${disabledAttr}> <label for="opt_${uniqueId}_${letter}">${opt}</label></div>`;
+        });
+        let feedbackHtml = '';
+        if (state.answered) {
+            const correctAns = allQuestionsCorrect[testIdx][qIdx];
+            let correctText = "";
+            for (let opt of q.options) {
+                if (opt.charAt(0) === correctAns) { correctText = opt.substring(2); break; }
+            }
+            if (state.isCorrect) {
+                feedbackHtml = `<div class="feedback-badge correct">✅ Correct! The right answer is ${correctAns}. ${correctText}</div>`;
+            } else {
+                let selectedText = "";
+                for (let opt of q.options) {
+                    if (opt.charAt(0) === state.selected) { selectedText = opt.substring(2); break; }
+                }
+                feedbackHtml = `<div class="feedback-badge incorrect">❌ Incorrect. You chose ${state.selected}. ${selectedText}<br>✔ Correct answer: ${correctAns}. ${correctText}</div>`;
+            }
+        } else {
+            feedbackHtml = `<div class="feedback-badge" id="fb_${uniqueId}"></div>`;
+        }
+        return `<div class="question-card" data-test="${testIdx}" data-qidx="${qIdx}" data-correct="${q.correct}">
+            <div class="question-text">${qIdx+1}. ${q.text}</div>
+            <div class="options">${optsHtml}</div>
+            ${feedbackHtml}
+        </div>`;
+    }
+
+    function attachRadioEvents(testIdx) {
+        const radios = document.querySelectorAll('.test-container input[type="radio"]:not(:disabled)');
+        radios.forEach(radio => {
+            radio.removeEventListener('change', radioHandler);
+            radio.addEventListener('change', radioHandler);
+        });
+    }
+
+    function radioHandler(e) {
+        const radio = e.target;
+        const questionCard = radio.closest('.question-card');
+        if (!questionCard) return;
+        const testIdx = parseInt(questionCard.getAttribute('data-test'));
+        const qIdx = parseInt(questionCard.getAttribute('data-qidx'));
+        const correctAnswer = questionCard.getAttribute('data-correct');
+        const selectedValue = radio.value;
+        const isCorrect = (selectedValue === correctAnswer);
+        
+        updateQuestionState(testIdx, qIdx, selectedValue, isCorrect);
+        
+        // Disable all radios in this question
+        const allRadios = questionCard.querySelectorAll('input[type="radio"]');
+        allRadios.forEach(r => r.disabled = true);
+        
+        // Update feedback
+        const existingFeedback = questionCard.querySelector('.feedback-badge');
+        let correctText = "";
+        const optionsDiv = questionCard.querySelector('.options');
+        const optionLabels = optionsDiv.querySelectorAll('.option label');
+        for (let label of optionLabels) {
+            if (label.innerText.charAt(0) === correctAnswer) {
+                correctText = label.innerText.substring(2);
+                break;
+            }
+        }
+        if (isCorrect) {
+            existingFeedback.innerHTML = `✅ Correct! The right answer is ${correctAnswer}. ${correctText}`;
+            existingFeedback.className = "feedback-badge correct";
+        } else {
+            let selectedText = "";
+            for (let label of optionLabels) {
+                if (label.innerText.charAt(0) === selectedValue) {
+                    selectedText = label.innerText.substring(2);
+                    break;
+                }
+            }
+            existingFeedback.innerHTML = `❌ Incorrect. You chose ${selectedValue}. ${selectedText}<br>✔ Correct answer: ${correctAnswer}. ${correctText}`;
+            existingFeedback.className = "feedback-badge incorrect";
+        }
+        existingFeedback.style.display = "block";
+    }
+
+    // Tab switching
+    function switchTest(index) {
+        renderTest(index);
+        document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+            if (i === index) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+    }
+    document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        btn.addEventListener('click', () => switchTest(idx));
+    });
+    
+    renderTest(0);
+    updateFixedProgressBar(0);
+</script>
+</body>
+</html>
